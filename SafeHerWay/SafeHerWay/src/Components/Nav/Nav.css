@@ -1,0 +1,9 @@
+
+.navbar {
+  transition: background-color 0.4s ease, border-radius 0.4s ease;
+}
+
+.nav-scrolled {
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
