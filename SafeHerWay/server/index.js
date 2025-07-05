@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors"; // ✅ Import cors
 import userRoutes from "./routes/userRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
 
@@ -10,10 +11,22 @@ const app = express();
 const port = process.env.PORT || 5000;
 const mongoURL = process.env.MONGODB_URL;
 
+// ✅ Enable CORS for your frontend origin
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your React frontend origin
+    credentials: true,
+  })
+);
+
+// ✅ JSON middleware
 app.use(express.json());
-app.use("/api", userRoutes); // Base path for user routes
+
+// ✅ API routes
+app.use("/api", userRoutes);
 app.use("/api", otpRoutes);
 
+// ✅ MongoDB connection
 mongoose
   .connect(mongoURL)
   .then(() => {

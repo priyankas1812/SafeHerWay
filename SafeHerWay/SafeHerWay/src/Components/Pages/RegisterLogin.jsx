@@ -4,6 +4,9 @@ import axios from "axios";
 
 const RegisterLogin = () => {
   const [state, setState] = useState("Sign Up");
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -16,6 +19,7 @@ const RegisterLogin = () => {
     city: "",
     phone: "",
     gender: "",
+    aadhaar: "",
   });
 
   const handleChange = (e) => {
@@ -23,9 +27,55 @@ const RegisterLogin = () => {
     setForm({ ...form, [name]: value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (state === "Sign Up") {
+        const response = await axios.post(
+          "http://localhost:5000/api/otp/generate",
+          {
+            email: form.email.toLowerCase(),
+          }
+        );
+
+        if (response.status === 200) {
+          alert("OTP sent to your email.");
+          setShowOTPModal(true);
+        }
+      } else {
+        alert("Login logic not implemented.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert(error.response?.data?.error || "Failed to send OTP");
+    }
+  };
+
+  const handleOTPVerify = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/otp/verify",
+        {
+          email: form.email.toLowerCase(),
+          otp: otpInput,
+        }
+      );
+
+      if (response.status === 200) {
+        alert("OTP verified successfully.");
+        setShowOTPModal(false);
+        // You can now proceed to create user or navigate to another page
+      }
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      alert(error.response?.data?.error || "Invalid or expired OTP");
+    }
+  };
+
   return (
     <div className="register-page d-flex min-vh-100">
-      {/* Left Side with background image via CSS */}
+      {/* Left Side (optional background via CSS) */}
       <div className="register-left d-none d-md-flex align-items-center justify-content-center"></div>
 
       {/* Right Side Form */}
@@ -38,11 +88,10 @@ const RegisterLogin = () => {
             {state === "Sign Up" ? "Registration" : "Login"}
           </h3>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row g-3">
               {state === "Sign Up" ? (
                 <>
-                  {/* Full Name */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="text"
@@ -54,8 +103,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Username */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="text"
@@ -67,8 +114,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Date of Birth */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="date"
@@ -80,8 +125,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Email */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="email"
@@ -93,8 +136,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Mobile Number */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="tel"
@@ -107,8 +148,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Aadhaar Number */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="text"
@@ -122,8 +161,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Password */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="password"
@@ -135,8 +172,6 @@ const RegisterLogin = () => {
                       required
                     />
                   </div>
-
-                  {/* Confirm Password */}
                   <div className="col-md-6 mb-3">
                     <input
                       type="password"
@@ -151,7 +186,6 @@ const RegisterLogin = () => {
                 </>
               ) : (
                 <>
-                  {/* Username & Password for Login */}
                   <div className="col-12">
                     <input
                       type="text"
@@ -178,7 +212,6 @@ const RegisterLogin = () => {
               )}
             </div>
 
-            {/* Submit Button */}
             <div className="d-grid mt-4">
               <button
                 type="submit"
@@ -189,7 +222,6 @@ const RegisterLogin = () => {
             </div>
           </form>
 
-          {/* Footer Link Toggle */}
           <p className="text-center mt-3">
             {state === "Sign Up" ? (
               <>
@@ -217,6 +249,45 @@ const RegisterLogin = () => {
           </p>
         </div>
       </div>
+
+      {/* OTP Modal */}
+      {showOTPModal && (
+        <div className="modal fade show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Enter OTP</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowOTPModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <input
+                  type="text"
+                  maxLength={6}
+                  className="form-control"
+                  placeholder="Enter 6-digit OTP"
+                  value={otpInput}
+                  onChange={(e) => setOtpInput(e.target.value)}
+                />
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-primary" onClick={handleOTPVerify}>
+                  Verify OTP
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowOTPModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
