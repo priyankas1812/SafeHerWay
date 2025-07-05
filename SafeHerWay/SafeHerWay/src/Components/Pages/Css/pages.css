@@ -204,8 +204,8 @@
 }
 
 /* register login  page css  */
-.gradient-bg-color {
-  background: linear-gradient(to bottom right, #bfdbfe, #c084fc); /* Tailwind: from-blue-200 to-purple-400 */
+/* .gradient-bg-color {
+  background: linear-gradient(to bottom right, #bfdbfe, #c084fc);
 }
 .input-color {
   background-color: #333A5C;
@@ -223,14 +223,14 @@
 }
 
 .forgot-password {
-  color: #6366f1; /* Similar to Tailwind's indigo-500 */
+  color: #6366f1; 
   cursor: pointer;
 }
 
 .submit-btn {
-  padding: 10px 0; /* Approx. py-2.5 */
-  border-radius: 50rem; /* Pill shape like rounded-full */
-  background: linear-gradient(to right, #6366f1, #1e3a8a); /* from-indigo-500 to-indigo-900 */
+  padding: 10px 0; 
+  border-radius: 50rem;
+  background: linear-gradient(to right, #6366f1, #1e3a8a); 
   color: white;
   font-weight: 500;
   border: none;
@@ -241,9 +241,31 @@
 }
 
 .input-color input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1); /* makes the calendar icon white on dark backgrounds */
+  filter: invert(1); 
 }
 
 .input-color input::placeholder {
   color: #aaa;
+} */
+
+
+.register-page {
+  background: linear-gradient(135deg, #6c63ff 0%, #1e3c72 100%);
+}
+
+.register-left {
+  width: 50%;
+  background-image: url("../../../assets/Images/signpg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.register-right {
+  width: 50%;
+  padding: 2rem;
+}
+
+.form-wrapper {
+  background-color: #fff;
 }
