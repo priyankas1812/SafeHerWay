@@ -42,11 +42,16 @@ const Index = () => {
       >
         {[1, 2, 3, 4].map((num) => (
           <SwiperSlide key={num}>
-            <div className={`hero hero${num} d-flex flex-column justify-content-center align-items-center`}>
+            <div
+              className={`hero hero${num} d-flex flex-column justify-content-center align-items-center`}
+            >
               <div className="hero-content w-100 d-flex flex-column justify-content-center align-items-center">
                 <h2 className="text-white">Safe</h2>
                 <h1 className="text-white">Journey</h1>
-                <button onClick={goToRegister} className="btn text-white hero-btn mt-5">
+                <button
+                  onClick={goToRegister}
+                  className="btn text-white hero-btn mt-5"
+                >
                   Register
                 </button>
               </div>
