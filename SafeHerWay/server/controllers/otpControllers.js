@@ -15,10 +15,10 @@ const transporter = nodemailer.createTransport({
 // Send email
 const sendOTPEmail = async (to, otp) => {
   const mailOptions = {
-    from: "OTP Service" <patientptest@gmail.com>,
+    from: "OTP Service <patientptest@gmail.com>",
     to,
     subject: "Your OTP Code",
-    text: Your OTP code is: ${otp}. It will expire in 5 minutes.,
+    text: `Your OTP code is: ${otp}. It will expire in 5 minutes.`,
   };
   return transporter.sendMail(mailOptions);
 };
@@ -34,12 +34,13 @@ export const generateOTP = async (req, res) => {
 
   otpStore.set(email, { otp, expiresAt });
 
-  console.log(OTP for ${email}: ${otp});
+  console.log(`OTP for ${email}: ${otp}`);
 
   await sendOTPEmail(email, otp);
 
   return res.status(200).json({ message: "OTP sent successfully" });
 };
+
 // verify otp
 export const verifyOTPHandler = (req, res) => {
   const email = req.body.email?.toLowerCase();
