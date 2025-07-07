@@ -204,49 +204,6 @@
 }
 
 /* register login  page css  */
-/* .gradient-bg-color {
-  background: linear-gradient(to bottom right, #bfdbfe, #c084fc);
-}
-.input-color {
-  background-color: #333A5C;
-}
-.input-container{
-  background-color: #0f172a; 
-  color: #a5b4fc;          
-  padding: 2.5rem;          
-  border-radius: 1rem;      
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); 
-  width: 100%;
-  font-size: 0.875rem;       
-  max-width: 384px;          
-  margin: auto; 
-}
-
-.forgot-password {
-  color: #6366f1; 
-  cursor: pointer;
-}
-
-.submit-btn {
-  padding: 10px 0; 
-  border-radius: 50rem;
-  background: linear-gradient(to right, #6366f1, #1e3a8a); 
-  color: white;
-  font-weight: 500;
-  border: none;
-}
-
-.submit-btn:hover {
-  opacity: 0.9;
-}
-
-.input-color input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1); 
-}
-
-.input-color input::placeholder {
-  color: #aaa;
-} */
 
 
 .register-page {

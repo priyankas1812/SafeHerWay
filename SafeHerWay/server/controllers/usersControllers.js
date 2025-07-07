@@ -47,3 +47,57 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// POST - Check if user exists
+export const checkUserExists = async (req, res) => {
+  const { email, userName, phone, aadharNumber } = req.body;
+
+  try {
+    const errors = {};
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) errors.email = "Email already registered. Please login.";
+
+    const existingUserName = await User.findOne({ userName });
+    if (existingUserName) errors.userName = "Username already taken.";
+
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) errors.phone = "Mobile number already registered.";
+
+    const existingAadhar = await User.findOne({ aadharNumber });
+    if (existingAadhar)
+      errors.aadharNumber = "Aadhaar number already registered.";
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(409).json({ errors });
+    }
+
+    res.status(200).json({ message: "No duplicate found." });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+// POST - Login User
+export const loginUser = async (req, res) => {
+  const { userName, password } = req.body;
+
+  try {
+    // 1. Find user by username
+    const user = await User.findOne({ userName });
+
+    // 2. If user not found
+    if (!user) {
+      return res.status(401).json({ error: "Username not found." });
+    }
+
+    // 3. Check if password matches
+    if (user.password !== password) {
+      return res.status(401).json({ error: "Incorrect password." });
+    }
+
+    // 4. If match
+    return res.status(200).json({ message: "Login successful.", user });
+  } catch (error) {
+    return res.status(500).json({ error: "Login failed. Please try again." });
+  }
+};

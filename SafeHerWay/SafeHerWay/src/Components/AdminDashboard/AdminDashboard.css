@@ -1,0 +1,174 @@
+.admin-container {
+  font-family: "Segoe UI", sans-serif;
+  padding: 2rem;
+  background-color: #f7f9fc;
+  color: #1f2937;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header h2 {
+  font-weight: bold;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  flex: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.card .icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.card.yellow {
+  border-left: 5px solid #f7c948;
+}
+
+.card.green {
+  border-left: 5px solid #34d399;
+}
+
+.card.red {
+  border-left: 5px solid #f87171;
+}
+
+.card.blue {
+  border-left: 5px solid #60a5fa;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.user-left {
+  display: flex;
+  gap: 1rem;
+}
+
+.avatar-circle {
+  background: #3b82f6;
+  color: white;
+  width: 48px;
+  height: 48px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.user-info p {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.user-status {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.badge {
+  padding: 0.4rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.badge.pending-review {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge.approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge.rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.user-btn {
+  margin-top: 1rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.btn.review {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn.view {
+  background-color: #f3f4f6;
+  color: #111827;
+}
