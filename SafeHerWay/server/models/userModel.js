@@ -2,10 +2,9 @@ import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 const userSchema = new mongoose.Schema({
-  userId: {
+  _id: {
     type: String,
-    default: uuidv4,
-    unique: true,
+    default: uuidv4, // ✅ Keep UUID but remove `unique`
   },
   name: {
     type: String,
@@ -15,7 +14,7 @@ const userSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true,
-    unique: "user name already exists",
+    unique: true, // ✅ Correct usage
     trim: true,
   },
   email: {

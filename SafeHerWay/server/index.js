@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors"; // ✅ Import cors
 import userRoutes from "./routes/userRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
+import userTravelRoutes from "./routes/userTravelRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.json());
 // ✅ API routes
 app.use("/api", userRoutes);
 app.use("/api", otpRoutes);
+app.use("/api", userTravelRoutes);
 
 // ✅ MongoDB connection
 mongoose

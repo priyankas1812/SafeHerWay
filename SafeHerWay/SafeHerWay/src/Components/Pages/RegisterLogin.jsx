@@ -134,9 +134,11 @@ const RegisterLogin = () => {
           aadharNumber: form.aadhaar,
         });
 
+        console.log("the user response = ", createRes.data.user._id);
+
         if (createRes.status === 201 || createRes.status === 200) {
           setOtpMessage("🎉 User created successfully!");
-          navigate("/UserLandingpage");
+          navigate("/UserLandingpage" + createRes.data.user._id);
           setOtpError("");
 
           setTimeout(() => {
