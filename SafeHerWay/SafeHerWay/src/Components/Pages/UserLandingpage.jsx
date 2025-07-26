@@ -1,11 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import "./Css/UserLanding.css";
 const UserLandingPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [travelCompanions, setTravelCompanions] = useState([]);
   const [interests, setInterests] = useState([]);
 
+  useEffect(() => {
+    console.log("showModal state changed:", showModal);
+  }, [showModal]);
+
+  const [form, setForm] = useState({
+    source: "",
+    destination: "",
+    date: "",
+    description: "",
+  });
+  const { userId: userId } = useParams();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
   useEffect(() => {
     const fetchTravelPlans = async () => {
       try {
@@ -25,6 +43,40 @@ const UserLandingPage = () => {
     }
   };
 
+  const handlePostTrip = async () => {
+    const { source, destination, date, description } = form;
+    if (!source || !destination || !date) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const data = {
+      userId: userId,
+      source,
+      destination,
+      date,
+      interests,
+      description,
+    };
+
+    try {
+      console.log("Posting trip data to server...", userId);
+      console.log("the data ===>", data);
+      await axios.post("http://localhost:5000/api/usertravel", data);
+      alert("Trip posted successfully!");
+      setShowModal(false);
+
+      const res = await axios.get("http://localhost:5000/api/userTravels");
+      setTravelCompanions(res.data);
+
+      setForm({ source: "", destination: "", date: "", description: "" });
+      setInterests([]);
+    } catch (err) {
+      console.error("Failed to post trip:", err);
+      alert("Something went wrong!");
+    }
+  };
+
   return (
     <div className="landing-container">
       <div className="hero-section">
@@ -41,10 +93,23 @@ const UserLandingPage = () => {
             <input type="date" />
             <button className="search-btn">🔍 Search</button>
           </div>
-          <p className="post-plan" onClick={() => setShowModal(true)}>
+          <p
+            className="post-plan"
+            onClick={() => {
+              console.log("Post your travel plan clicked");
+              setShowModal(true);
+            }}
+          >
             Can't find anyone? <span>Post your own travel plan →</span>
           </p>
         </div>
+      </div>
+
+      <div
+        className="text-gray-700 hover:text-blue-600 text-3xl cursor-pointer View-Profile"
+        title="View Profile"
+      >
+        <FontAwesomeIcon icon={faUserCircle} />
       </div>
 
       <div className="card-container">
@@ -74,10 +139,36 @@ const UserLandingPage = () => {
             className="modal"
             onClick={(e) => e.stopPropagation()} // Prevent closing on inside click
           >
-            <h2>Post Your Travel Plan</h2>
-            <input type="text" placeholder="From" />
-            <input type="text" placeholder="To" />
-            <input type="date" />
+            <h2
+              style={{
+                backgroundImage: "linear-gradient(to right, #6c63ff, #b06ab3)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontWeight: "bold",
+              }}
+            >
+              Post Your Travel Plan
+            </h2>
+            <input
+              type="text"
+              name="source"
+              placeholder="From"
+              value={form.source}
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              name="destination"
+              placeholder="destination"
+              value={form.destination}
+              onChange={handleChange}
+            />
+            <input
+              type="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+            />
             <input
               type="text"
               placeholder="Add Interest (e.g., Movies)"
@@ -89,14 +180,12 @@ const UserLandingPage = () => {
                 }
               }}
             />
-            <div className="tags">
-              {interests.map((tag, i) => (
-                <span className="tag" key={i}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <textarea placeholder="Travel Description"></textarea>
+            <textarea
+              placeholder="Travel Description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+            ></textarea>
             <div className="modal-buttons">
               <button
                 className="cancel-btn"
@@ -104,7 +193,9 @@ const UserLandingPage = () => {
               >
                 Cancel
               </button>
-              <button className="post-btn">Post My Trip</button>
+              <button className="post-btn" onClick={handlePostTrip}>
+                Post My Trip
+              </button>
             </div>
           </div>
         </div>

@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
 const userTravelSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    ref: "User", // Refers to userModel.js
-    required: true,
-  },
   user: {
     type: String, // refers to User._id (UUID string)
     ref: "User",
@@ -26,7 +21,7 @@ const userTravelSchema = new mongoose.Schema({
     required: true,
   },
   interests: {
-    type: [String], // Example: ["Beach", "Adventure"]
+    type: [String],
     default: [],
   },
   description: {

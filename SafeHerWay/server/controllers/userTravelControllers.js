@@ -4,16 +4,18 @@ import User from "../models/userModel.js";
 // POST: Create a new user travel plan
 export const createUserTravel = async (req, res) => {
   try {
+    console.log("Creating user travel plan with data:", req.body);
     const { userId, source, destination, date, interests, description } =
       req.body;
 
-    const userExists = await User.findOne({ userId });
+    const userExists = await User.findById(userId);
+
     if (!userExists) {
       return res.status(404).json({ error: "User not found." });
     }
 
     const newPlan = new userTravel({
-      userId,
+      user: userId,
       source,
       destination,
       date,
@@ -28,6 +30,7 @@ export const createUserTravel = async (req, res) => {
       userTravel: savedPlan,
     });
   } catch (error) {
+    console.log("error", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 };
@@ -52,12 +55,10 @@ export const getUserUserTravels = async (req, res) => {
 
 // GET: All travel plans
 export const getAllUserTravels = async (req, res) => {
-  console.log(" I am here");
-
   try {
     const plans = await userTravel
       .find()
-      .populate("user", "name userName email age" );
+      .populate("user", "name userName email age");
     res.status(200).json(plans);
   } catch (error) {
     console.log("the error is ", error);

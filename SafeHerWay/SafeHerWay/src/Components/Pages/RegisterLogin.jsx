@@ -96,7 +96,7 @@ const RegisterLogin = () => {
         if (loginResponse.status === 200) {
           const user = loginResponse.data.user;
           console.log("✅ Login successful", user);
-          navigate("/UserLandingpage");
+          navigate("/UserLandingpage/" + loginResponse.data.user._id);
 
           setFormError(""); // clear any previous errors
         }
@@ -138,7 +138,7 @@ const RegisterLogin = () => {
 
         if (createRes.status === 201 || createRes.status === 200) {
           setOtpMessage("🎉 User created successfully!");
-          navigate("/UserLandingpage" + createRes.data.user._id);
+          navigate("/UserLandingpage/" + createRes.data.user._id);
           setOtpError("");
 
           setTimeout(() => {

@@ -45,7 +45,6 @@
   background-image: url("../../../assets/Images/slider-4.jpg");
 }
 
-
 .hero::after {
   content: "";
   position: absolute;
@@ -205,7 +204,6 @@
 
 /* register login  page css  */
 
-
 .register-page {
   background: linear-gradient(135deg, #6c63ff 0%, #1e3c72 100%);
 }
@@ -226,28 +224,9 @@
 .form-wrapper {
   background-color: #fff;
 }
-  /* userLanding css */
-  /* General Container */
-/* === GLOBAL RESET === */
-/* === FULL RESET === */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: white;
-  overflow-x: hidden;
-} */
-
 
 /* === LANDING PAGE === */
+/* === PAGE CONTAINER === */
 .landing-container {
   background: linear-gradient(to right, #6f42c1, #6c63ff);
   color: white;
@@ -359,64 +338,6 @@ html, body {
 
 .connect-btn:hover {
   transform: scale(1.05);
-}
-
-/* === MODAL === */
-/* .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  color: #333;
-  width: 90%;
-  max-width: 450px;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-}
-
-.modal input,
-.modal textarea {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #aaa;
-  font-size: 14px;
-  width: 100%;
-}
-
-.modal input::placeholder,
-.modal textarea::placeholder {
-  color: #aaa;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 15px;
-} */
-
-.cancel-btn,
-.post-btn {
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .cancel-btn {

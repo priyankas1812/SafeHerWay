@@ -13,9 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/RegisterLogin" element={<RegisterLogin />} />
-        <Route path="/UserLandingpage" element={<UserLandingpage />} />
+        <Route path="/UserLandingpage/:userId" element={<UserLandingpage />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
-
       </Routes>
     </>
   );
