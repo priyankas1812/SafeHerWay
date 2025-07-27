@@ -54,15 +54,52 @@ export const getUserUserTravels = async (req, res) => {
 };
 
 // GET: All travel plans
+// export const getAllUserTravels = async (req, res) => {
+//   try {
+//     const plans = await userTravel
+//       .find()
+//       .populate("user", "name userName email age");
+//     res.status(200).json(plans);
+//   } catch (error) {
+//     console.log("the error is ", error);
+
+//     res.status(500).json({ error: "Failed to fetch all user travels." });
+//   }
+// };
 export const getAllUserTravels = async (req, res) => {
   try {
     const plans = await userTravel
       .find()
-      .populate("user", "name userName email age");
-    res.status(200).json(plans);
-  } catch (error) {
-    console.log("the error is ", error);
+      .populate("user", "name userName email age isVerified");
 
-    res.status(500).json({ error: "Failed to fetch all user travels." });
+    // Filter only those where the populated user is verified
+    const verifiedPlans = plans.filter(
+      (plan) => plan.user && plan.user.isVerified === true
+    );
+
+    res.status(200).json(verifiedPlans);
+  } catch (error) {
+    console.log("The error is", error);
+    res.status(500).json({ error: "Failed to fetch verified user travels." });
+  }
+};
+
+// GET: Filtered search for travel plans
+export const searchUserTravels = async (req, res) => {
+  try {
+    const { source, destination, date } = req.query;
+
+    const query = {};
+    if (source) query.source = { $regex: source, $options: "i" };
+    if (destination) query.destination = { $regex: destination, $options: "i" };
+    if (date) query.date = new Date(date);
+
+    const results = await userTravel
+      .find(query)
+      .populate("user", "name userName email age");
+
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ error: "Search failed", details: error.message });
   }
 };

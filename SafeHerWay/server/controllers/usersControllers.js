@@ -42,6 +42,8 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
+    console.log("abcd", users);
+
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -99,5 +101,37 @@ export const loginUser = async (req, res) => {
     return res.status(200).json({ message: "Login successful.", user });
   } catch (error) {
     return res.status(500).json({ error: "Login failed. Please try again." });
+  }
+};
+
+// Approve or Reject a user
+export const verifyUser = async (req, res) => {
+  console.log("this function is called");
+
+  const { id } = req.params;
+  const { action } = req.body;
+
+  try {
+    if (!["approve", "reject"].includes(action)) {
+      return res.status(400).json({ error: "Invalid action" });
+    }
+
+    const update =
+      action === "approve"
+        ? { isVerified: true, status: "Approved" }
+        : { isVerified: false, status: "Rejected" };
+
+    const updatedUser = await User.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error verifying user:", error.message);
+    res.status(500).json({ error: "Server error" });
   }
 };

@@ -3,6 +3,7 @@ import {
   createUserTravel,
   getUserUserTravels,
   getAllUserTravels,
+  searchUserTravels,
 } from "../controllers/userTravelControllers.js";
 
 const router = express.Router();
@@ -15,5 +16,8 @@ router.get("/usertravel/:userId", getUserUserTravels);
 
 // GET: Get all user travel plans
 router.get("/usertravels", getAllUserTravels);
+
+// GET: search filter
+router.get("/userTravels/search", searchUserTravels);
 
 export default router;

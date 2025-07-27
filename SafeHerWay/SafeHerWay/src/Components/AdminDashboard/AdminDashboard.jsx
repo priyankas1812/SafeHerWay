@@ -5,13 +5,16 @@ import "./AdminDashboard.css";
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  // Fetch users from API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/users/");
-        setUsers(res.data); // API must return an array of user objects
+        console.log("rrr", res);
+
+        setUsers(res.data);
       } catch (err) {
         console.error("Error fetching users:", err);
       } finally {
@@ -22,7 +25,35 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
-  // Count users by status
+  const handleVerify = async (action, userId) => {
+    try {
+      const url = `http://localhost:5000/api/${userId}/verify`;
+
+      const response = await axios.patch(url, {
+        action: action,
+      });
+
+      alert(`User ${action}d successfully`);
+
+      // Update frontend list
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId
+            ? {
+                ...user,
+                status: action === "approve" ? "Approved" : "Rejected",
+              }
+            : user
+        )
+      );
+
+      setShowModal(false);
+    } catch (error) {
+      console.error(`Failed to ${action} user:`, error);
+      alert(`Failed to ${action} user.`);
+    }
+  };
+
   const countByStatus = (status) =>
     users.filter((user) => user.status === status).length;
 
@@ -77,10 +108,6 @@ const AdminDashboard = () => {
                     .join("")
                 : "NA");
 
-            const maskedAadhaar = user.aadhaar
-              ? `**** **** ${user.aadhaar.slice(-4)}`
-              : "Not Provided";
-
             const userStatus = user.status || "Unknown";
 
             return (
@@ -92,7 +119,7 @@ const AdminDashboard = () => {
                     <p>ID: {user.userId || user._id || "N/A"}</p>
                     <p>Phone: {user.phone || "N/A"}</p>
                     <p>Email: {user.email || "N/A"}</p>
-                    <p>Aadhaar: {maskedAadhaar}</p>
+                    <p>Aadhaar: {user.aadharNumber}</p>
                     <p>
                       {userStatus === "Approved" ? "Approved:" : "Submitted:"}{" "}
                       {user.time || "N/A"}
@@ -115,6 +142,10 @@ const AdminDashboard = () => {
                     className={`btn ${
                       userStatus === "Approved" ? "view" : "review"
                     }`}
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setShowModal(true);
+                    }}
                   >
                     {userStatus === "Approved"
                       ? "View Details"
@@ -126,6 +157,46 @@ const AdminDashboard = () => {
           })
         )}
       </div>
+
+      {/* Modal Popup */}
+      {showModal && selectedUser && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="close-btn" onClick={() => setShowModal(false)}>
+              ✖
+            </button>
+            <h3>{selectedUser.name || "User"}'s Details</h3>
+            <p>
+              <strong>User ID:</strong>{" "}
+              {selectedUser.userId || selectedUser._id}
+            </p>
+            <p>
+              <strong>Phone:</strong> {selectedUser.phone || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedUser.email || "N/A"}
+            </p>
+            <p>
+              <strong>Aadhaar:</strong>
+              {selectedUser.aadharNumber || "N/A"}
+            </p>
+            <div className="modal-actions">
+              <button
+                className="btn approve"
+                onClick={() => handleVerify("approve", selectedUser._id)}
+              >
+                ✅ Approve
+              </button>
+              <button
+                className="btn reject"
+                onClick={() => handleVerify("reject", selectedUser._id)}
+              >
+                ❌ Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

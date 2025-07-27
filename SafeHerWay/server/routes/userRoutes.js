@@ -4,6 +4,7 @@ import {
   getUsers,
   checkUserExists,
   loginUser,
+  verifyUser,
 } from "../controllers/usersControllers.js";
 
 const router = express.Router();
@@ -12,4 +13,5 @@ router.post("/users", createUser);
 router.get("/users", getUsers);
 router.post("/users/checkexists", checkUserExists);
 router.post("/user/loginUser", loginUser);
+router.patch("/:id/verify", verifyUser);
 export default router;

@@ -4,14 +4,16 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import "./Css/UserLanding.css";
+
 const UserLandingPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [travelCompanions, setTravelCompanions] = useState([]);
   const [interests, setInterests] = useState([]);
-
-  useEffect(() => {
-    console.log("showModal state changed:", showModal);
-  }, [showModal]);
+  const [searchFilters, setSearchFilters] = useState({
+    source: "",
+    destination: "",
+    date: "",
+  });
 
   const [form, setForm] = useState({
     source: "",
@@ -19,11 +21,9 @@ const UserLandingPage = () => {
     date: "",
     description: "",
   });
-  const { userId: userId } = useParams();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+
+  const { userId } = useParams();
+
   useEffect(() => {
     const fetchTravelPlans = async () => {
       try {
@@ -35,6 +35,11 @@ const UserLandingPage = () => {
     };
     fetchTravelPlans();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleInterestChange = (e) => {
     const value = e.target.value;
@@ -51,7 +56,7 @@ const UserLandingPage = () => {
     }
 
     const data = {
-      userId: userId,
+      userId,
       source,
       destination,
       date,
@@ -60,8 +65,6 @@ const UserLandingPage = () => {
     };
 
     try {
-      console.log("Posting trip data to server...", userId);
-      console.log("the data ===>", data);
       await axios.post("http://localhost:5000/api/usertravel", data);
       alert("Trip posted successfully!");
       setShowModal(false);
@@ -77,6 +80,26 @@ const UserLandingPage = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearch = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/userTravels/search",
+        {
+          params: searchFilters,
+        }
+      );
+      setTravelCompanions(res.data);
+    } catch (err) {
+      console.error("Search failed:", err);
+      alert("Search failed");
+    }
+  };
+
   return (
     <div className="landing-container">
       <div className="hero-section">
@@ -88,18 +111,31 @@ const UserLandingPage = () => {
 
         <div className="search-container">
           <div className="search-box">
-            <input type="text" placeholder="From" />
-            <input type="text" placeholder="To" />
-            <input type="date" />
-            <button className="search-btn">🔍 Search</button>
+            <input
+              type="text"
+              name="source"
+              placeholder="From"
+              value={searchFilters.source}
+              onChange={handleSearchChange}
+            />
+            <input
+              type="text"
+              name="destination"
+              placeholder="To"
+              value={searchFilters.destination}
+              onChange={handleSearchChange}
+            />
+            <input
+              type="date"
+              name="date"
+              value={searchFilters.date}
+              onChange={handleSearchChange}
+            />
+            <button className="search-btn" onClick={handleSearch}>
+              🔍 Search
+            </button>
           </div>
-          <p
-            className="post-plan"
-            onClick={() => {
-              console.log("Post your travel plan clicked");
-              setShowModal(true);
-            }}
-          >
+          <p className="post-plan" onClick={() => setShowModal(true)}>
             Can't find anyone? <span>Post your own travel plan →</span>
           </p>
         </div>
@@ -135,10 +171,7 @@ const UserLandingPage = () => {
 
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div
-            className="modal"
-            onClick={(e) => e.stopPropagation()} // Prevent closing on inside click
-          >
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2
               style={{
                 backgroundImage: "linear-gradient(to right, #6c63ff, #b06ab3)",
@@ -159,7 +192,7 @@ const UserLandingPage = () => {
             <input
               type="text"
               name="destination"
-              placeholder="destination"
+              placeholder="To"
               value={form.destination}
               onChange={handleChange}
             />
