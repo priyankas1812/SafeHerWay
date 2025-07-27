@@ -99,6 +99,28 @@ const UserLandingPage = () => {
       alert("Search failed");
     }
   };
+  const handleSendRequest = async (travelPlan) => {
+    const fromUserId = userId; // ✅ From params
+    const toUserId = travelPlan.user?._id; // ✅ From travel plan
+    const travelplanId = travelPlan._id;
+
+    const data = {
+      fromUserId,
+      toUserId,
+      travelplanId,
+    };
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/userTravels/sendConReq",
+        data
+      );
+      alert("Connection request sent!");
+    } catch (err) {
+      console.error("Error sending request:", err);
+      alert("Failed to send connection request.");
+    }
+  };
 
   return (
     <div className="landing-container">
@@ -164,7 +186,12 @@ const UserLandingPage = () => {
                 </span>
               ))}
             </div>
-            <button className="connect-btn">Send Connection Request</button>
+            <button
+              className="connect-btn"
+              onClick={() => handleSendRequest(comp)}
+            >
+              Send Connection Request
+            </button>
           </div>
         ))}
       </div>

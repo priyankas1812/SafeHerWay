@@ -1,5 +1,6 @@
 import userTravel from "../models/userTravelModel.js";
 import User from "../models/userModel.js";
+import nodemailer from "nodemailer";
 
 // POST: Create a new user travel plan
 export const createUserTravel = async (req, res) => {
@@ -54,18 +55,7 @@ export const getUserUserTravels = async (req, res) => {
 };
 
 // GET: All travel plans
-// export const getAllUserTravels = async (req, res) => {
-//   try {
-//     const plans = await userTravel
-//       .find()
-//       .populate("user", "name userName email age");
-//     res.status(200).json(plans);
-//   } catch (error) {
-//     console.log("the error is ", error);
 
-//     res.status(500).json({ error: "Failed to fetch all user travels." });
-//   }
-// };
 export const getAllUserTravels = async (req, res) => {
   try {
     const plans = await userTravel
@@ -101,5 +91,75 @@ export const searchUserTravels = async (req, res) => {
     res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ error: "Search failed", details: error.message });
+  }
+};
+
+// Nodemailer setup (same as before)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "patientptest@gmail.com",
+    pass: "pgfw noar jhit skgv", // App password
+  },
+});
+
+// Send Connection Request Email
+export const sendConnectionRequestEmail = async (req, res) => {
+  const { fromUserId, toUserId, travelplanId } = req.body;
+
+  if (!fromUserId || !toUserId || !travelplanId) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    // Fetch all necessary data
+    const fromUser = await User.findById(fromUserId);
+    const toUser = await User.findById(toUserId);
+    const travelPlan = await userTravel.findById(travelplanId);
+
+    // Error handling
+    if (!fromUser || !toUser) {
+      return res.status(404).json({ error: "User(s) not found" });
+    }
+
+    if (!travelPlan) {
+      return res.status(404).json({ error: "Travel plan not found" });
+    }
+
+    // Compose and send email
+    const mailOptions = {
+      from: "SafeHerWay <patientptest@gmail.com>",
+      to: toUser.email,
+      subject: `You've received a new connection request!`,
+      html: `
+        <p>Hi ${toUser.name},</p>
+        <p><strong>${fromUser.name}</strong> (@${
+        fromUser.userName
+      }) wants to connect with you for a trip:</p>
+        <ul>
+          <li><strong>From:</strong> ${travelPlan.source}</li>
+          <li><strong>To:</strong> ${travelPlan.destination}</li>
+          <li><strong>Date:</strong> ${new Date(
+            travelPlan.date
+          ).toDateString()}</li>
+        </ul>
+        <p>Please check your dashboard to accept or decline the request.</p>
+        <br/>
+        <p>Safe travels,<br/>SafeHerWay Team</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return res
+      .status(200)
+      .json({ message: "Connection request email sent successfully" });
+  } catch (error) {
+    console.error("Email send error:", error);
+    res
+      .status(500)
+      .json({
+        error: "Failed to send connection request",
+        details: error.message,
+      });
   }
 };
