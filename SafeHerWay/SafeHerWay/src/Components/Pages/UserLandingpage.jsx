@@ -6,14 +6,13 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import "./Css/UserLanding.css";
 
 const UserLandingPage = () => {
+  const { userId } = useParams();
+
   const [showModal, setShowModal] = useState(false);
   const [travelCompanions, setTravelCompanions] = useState([]);
   const [interests, setInterests] = useState([]);
-  const [searchFilters, setSearchFilters] = useState({
-    source: "",
-    destination: "",
-    date: "",
-  });
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [connectionRequests, setConnectionRequests] = useState([]);
 
   const [form, setForm] = useState({
     source: "",
@@ -22,7 +21,11 @@ const UserLandingPage = () => {
     description: "",
   });
 
-  const { userId } = useParams();
+  const [searchFilters, setSearchFilters] = useState({
+    source: "",
+    destination: "",
+    date: "",
+  });
 
   useEffect(() => {
     const fetchTravelPlans = async () => {
@@ -35,6 +38,49 @@ const UserLandingPage = () => {
     };
     fetchTravelPlans();
   }, []);
+
+  const handleSidebarToggle = async () => {
+    setShowSidebar(!showSidebar);
+
+    if (!showSidebar) {
+      try {
+        console.log("the user Id", userId);
+
+        const res = await axios.post("http://localhost:5000/api/getConReq", {
+          toUserId: userId, // ✅ Send in POST body
+        });
+        setConnectionRequests(res.data.requests); // ✅ access .requests from response
+      } catch (err) {
+        console.error("Failed to fetch connection requests:", err);
+        alert("Error fetching connection requests.");
+      }
+    }
+  };
+  const handleAccept = async (reqId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/connectionRequests/${reqId}`, {
+        status: "accepted",
+      });
+      alert("Accepted successfully!");
+      setConnectionRequests((prev) => prev.filter((req) => req._id !== reqId));
+    } catch (err) {
+      console.error("Accept failed:", err);
+      alert("Failed to accept.");
+    }
+  };
+
+  const handleReject = async (reqId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/connectionRequests/${reqId}`, {
+        status: "rejected",
+      });
+      alert("Rejected.");
+      setConnectionRequests((prev) => prev.filter((req) => req._id !== reqId));
+    } catch (err) {
+      console.error("Reject failed:", err);
+      alert("Failed to reject.");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,9 +145,10 @@ const UserLandingPage = () => {
       alert("Search failed");
     }
   };
+
   const handleSendRequest = async (travelPlan) => {
-    const fromUserId = userId; // ✅ From params
-    const toUserId = travelPlan.user?._id; // ✅ From travel plan
+    const fromUserId = userId;
+    const toUserId = travelPlan.user?._id;
     const travelplanId = travelPlan._id;
 
     const data = {
@@ -111,10 +158,7 @@ const UserLandingPage = () => {
     };
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/userTravels/sendConReq",
-        data
-      );
+      await axios.post("http://localhost:5000/api/sendConReq", data);
       alert("Connection request sent!");
     } catch (err) {
       console.error("Error sending request:", err);
@@ -124,6 +168,7 @@ const UserLandingPage = () => {
 
   return (
     <div className="landing-container">
+      {/* Hero and Search Section */}
       <div className="hero-section">
         <h1>Find Your Perfect Travel Companion</h1>
         <p>
@@ -163,13 +208,49 @@ const UserLandingPage = () => {
         </div>
       </div>
 
+      {/* Profile icon */}
       <div
         className="text-gray-700 hover:text-blue-600 text-3xl cursor-pointer View-Profile"
         title="View Profile"
+        onClick={handleSidebarToggle}
       >
         <FontAwesomeIcon icon={faUserCircle} />
       </div>
 
+      {/* Sidebar */}
+      {showSidebar && (
+        <div className="sidebar">
+          <h2>Connection Requests</h2>
+          {connectionRequests.length === 0 ? (
+            <p>No requests found.</p>
+          ) : (
+            connectionRequests.map((req) => (
+              <div className="request-card" key={req._id}>
+                <h4>{req.fromUser?.name || "Unknown"}</h4>
+                <p>{req.fromUser?.age || "N/A"} years old</p>
+                <p>
+                  📍 {req.travelPlan?.source} → {req.travelPlan?.destination}
+                </p>
+                <p>📅 {new Date(req.travelPlan?.date).toLocaleDateString()}</p>
+                <button
+                  onClick={() => handleAccept(req._id)}
+                  className="accept-btn"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleReject(req._id)}
+                  className="reject-btn"
+                >
+                  Reject
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Companion Cards */}
       <div className="card-container">
         {travelCompanions.map((comp, i) => (
           <div className="companion-card" key={i}>
@@ -196,19 +277,11 @@ const UserLandingPage = () => {
         ))}
       </div>
 
+      {/* Modal for Posting Trip */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2
-              style={{
-                backgroundImage: "linear-gradient(to right, #6c63ff, #b06ab3)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                fontWeight: "bold",
-              }}
-            >
-              Post Your Travel Plan
-            </h2>
+            <h2 className="gradient-text">Post Your Travel Plan</h2>
             <input
               type="text"
               name="source"

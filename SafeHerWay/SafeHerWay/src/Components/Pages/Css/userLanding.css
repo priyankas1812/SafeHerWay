@@ -81,3 +81,118 @@
     transform: translateY(0);
   }
 }
+
+
+/* Sidebar container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100vh;
+  background-color: #fff;
+  border-left: 2px solid #ddd;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 999;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Optional toggle animation */
+.sidebar.show {
+  transform: translateX(0);
+}
+
+.sidebar.hide {
+  transform: translateX(100%);
+}
+
+/* Sidebar heading */
+/* Sidebar container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 100%;
+  background-color: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  padding: 24px;
+  overflow-y: auto;
+  z-index: 999;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Sidebar main heading */
+.sidebar h2 {
+  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 12px;
+}
+
+/* Request card container */
+.request-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.request-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Name heading in request card */
+.request-card h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Request card text */
+.request-card p {
+  margin: 6px 0;
+  color: #555;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.accept-btn,
+.reject-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  margin-top: 14px;
+  margin-right: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.accept-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #219653;
+}
+
+.reject-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #c0392b;
+}

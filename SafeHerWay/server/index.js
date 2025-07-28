@@ -5,6 +5,7 @@ import cors from "cors"; // ✅ Import cors
 import userRoutes from "./routes/userRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
 import userTravelRoutes from "./routes/userTravelRoutes.js";
+import conReqRoutes from "./routes/conReqRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api", otpRoutes);
 app.use("/api", userTravelRoutes);
+app.use("/api", conReqRoutes);
 
 // ✅ MongoDB connection
 mongoose
