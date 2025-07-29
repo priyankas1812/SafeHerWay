@@ -4,8 +4,7 @@ import {
   getUserUserTravels,
   getAllUserTravels,
   searchUserTravels,
-  // sendConnectionRequestEmail,
-  // getConnectionRequestsForUser,
+  checkIsAcceptedStatus,
 } from "../controllers/userTravelControllers.js";
 
 const router = express.Router();
@@ -22,8 +21,6 @@ router.get("/usertravels", getAllUserTravels);
 // GET: search filter  sendConnectionRequestEmail
 router.get("/userTravels/search", searchUserTravels);
 
-// router.post("/userTravels/sendConReq", sendConnectionRequestEmail);
-
-// router.post("/userTravels/getConReq", getConnectionRequestsForUser);
+router.get("/checkAccepted/:travelPlanId", checkIsAcceptedStatus);
 
 export default router;

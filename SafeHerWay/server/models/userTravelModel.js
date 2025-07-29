@@ -28,6 +28,10 @@ const userTravelSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  isAccepted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const userTravel = mongoose.model("userTravel", userTravelSchema);

@@ -1,13 +1,58 @@
 import User from "../models/userModel.js";
 
 // POST - Create new user
+// export const createUser = async (req, res) => {
+//   try {
+//     const { name, userName, email, password, age, phone, aadharNumber } =
+//       req.body;
+
+//     // Optional: Validate required fields here if needed
+//     if (!name || !userName || !email || !password || !phone || !aadharNumber) {
+//       return res
+//         .status(400)
+//         .json({ error: "Please fill all required fields." });
+//     }
+
+//     // Check for existing email
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(409).json({ error: "Email already exists." });
+//     }
+
+//     const user = new User({
+//       name,
+//       userName,
+//       email,
+//       password,
+//       age,
+//       phone,
+//       aadharNumber,
+//     });
+
+//     const savedUser = await user.save();
+//     res
+//       .status(201)
+//       .json({ message: "User created successfully.", user: savedUser });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 export const createUser = async (req, res) => {
   try {
-    const { name, userName, email, password, age, phone, aadharNumber } =
+    const { name, userName, email, password, phone, aadharNumber, age } =
       req.body;
 
-    // Optional: Validate required fields here if needed
-    if (!name || !userName || !email || !password || !phone || !aadharNumber) {
+    // Validate required fields
+    if (
+      !name ||
+      !userName ||
+      !email ||
+      !password ||
+      !phone ||
+      !aadharNumber ||
+      !age
+    ) {
       return res
         .status(400)
         .json({ error: "Please fill all required fields." });
@@ -19,12 +64,23 @@ export const createUser = async (req, res) => {
       return res.status(409).json({ error: "Email already exists." });
     }
 
+    // ✅ Calculate numeric age from birthdate string
+    const birthDate = new Date(age); // Here, 'age' is actually the DOB
+    const today = new Date();
+    let tempAge = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      tempAge--; // ✅ Use tempAge, not age
+    }
+
     const user = new User({
       name,
       userName,
       email,
       password,
-      age,
+      age: tempAge, // ✅ Calculated age
       phone,
       aadharNumber,
     });
@@ -34,10 +90,10 @@ export const createUser = async (req, res) => {
       .status(201)
       .json({ message: "User created successfully.", user: savedUser });
   } catch (error) {
+    console.error("Error creating user:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
-
 // GET - All users
 export const getUsers = async (req, res) => {
   try {
@@ -133,5 +189,23 @@ export const verifyUser = async (req, res) => {
   } catch (error) {
     console.error("Error verifying user:", error.message);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+// GET - Get single user by ID
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).select("name userName email age");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
+    res.status(500).json({ error: "Server error." });
   }
 };

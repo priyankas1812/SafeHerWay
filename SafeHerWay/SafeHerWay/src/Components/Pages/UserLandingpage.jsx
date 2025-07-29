@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import "./Css/UserLanding.css";
+import ChatPage from "./chatPage";
 
 const UserLandingPage = () => {
   const { userId } = useParams();
-
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [travelCompanions, setTravelCompanions] = useState([]);
   const [interests, setInterests] = useState([]);
@@ -68,6 +69,7 @@ const UserLandingPage = () => {
       alert("Failed to accept.");
     }
   };
+  const [acceptedConnections, setAcceptedConnections] = useState([]);
 
   const handleReject = async (reqId) => {
     try {
@@ -166,6 +168,21 @@ const UserLandingPage = () => {
     }
   };
 
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/user/${userId}`);
+        setUserData(res.data); // Assuming res.data contains the user object
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
+
   return (
     <div className="landing-container">
       {/* Hero and Search Section */}
@@ -215,6 +232,7 @@ const UserLandingPage = () => {
         onClick={handleSidebarToggle}
       >
         <FontAwesomeIcon icon={faUserCircle} />
+        {userData && <p className="profile-name">{userData.name}</p>}
       </div>
 
       {/* Sidebar */}
@@ -251,7 +269,7 @@ const UserLandingPage = () => {
       )}
 
       {/* Companion Cards */}
-      <div className="card-container">
+      {/* <div className="card-container">
         {travelCompanions.map((comp, i) => (
           <div className="companion-card" key={i}>
             <h3>{comp?.user?.name || "Anonymous"}</h3>
@@ -273,6 +291,46 @@ const UserLandingPage = () => {
             >
               Send Connection Request
             </button>
+          </div>
+        ))}
+      </div> */}
+
+      <div className="card-container">
+        {travelCompanions.map((comp, i) => (
+          <div className="companion-card" key={i}>
+            <h3>{comp?.user?.name || "Anonymous"}</h3>
+            <p>{comp?.user?.age || "N/A"} years old</p>
+            <p>
+              📍 {comp.source} → {comp.destination}
+            </p>
+            <p>📅 {new Date(comp.date).toLocaleDateString()}</p>
+
+            <div className="tags">
+              {comp.interests?.map((tag, idx) => (
+                <span className="tag" key={idx}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {comp.isAccepted ? (
+              <div className="action-buttons">
+                <button
+                  className="chat-btn"
+                  onClick={() => navigate("/ChatPage")}
+                >
+                  💬 Chat
+                </button>
+                <button className="call-btn">📞 Call</button>
+              </div>
+            ) : (
+              <button
+                className="connect-btn"
+                onClick={() => handleSendRequest(comp)}
+              >
+                Send Connection Request
+              </button>
+            )}
           </div>
         ))}
       </div>

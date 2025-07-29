@@ -104,17 +104,47 @@ export const getConnectionRequestsForUser = async (req, res) => {
   }
 };
 
+// export const updateConnectionRequestStatus = async (req, res) => {
+//   try {
+//     const { requestId } = req.params;
+//     const { status } = req.body;
+
+//     // Validate status
+//     if (!["accepted", "rejected"].includes(status)) {
+//       return res.status(400).json({ message: "Invalid status value" });
+//     }
+
+//     // Find and update the connection request
+//     const request = await ConnectionRequest.findByIdAndUpdate(
+//       requestId,
+//       { status },
+//       { new: true }
+//     );
+
+//     if (!request) {
+//       return res.status(404).json({ message: "Connection request not found" });
+//     }
+
+//     // Respond with the updated request
+//     return res.status(200).json({
+//       message: `Request has been ${status}`,
+//       updatedRequest: request,
+//     });
+//   } catch (error) {
+//     console.error("Error updating request status:", error);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
 export const updateConnectionRequestStatus = async (req, res) => {
   try {
     const { requestId } = req.params;
     const { status } = req.body;
 
-    // Validate status
     if (!["accepted", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
-    // Find and update the connection request
+    // Update the connection request
     const request = await ConnectionRequest.findByIdAndUpdate(
       requestId,
       { status },
@@ -125,7 +155,13 @@ export const updateConnectionRequestStatus = async (req, res) => {
       return res.status(404).json({ message: "Connection request not found" });
     }
 
-    // Respond with the updated request
+    // ✅ If accepted, update the userTravel's isAccepted field
+    if (status === "accepted") {
+      await userTravel.findByIdAndUpdate(request.travelPlan, {
+        isAccepted: true,
+      });
+    }
+
     return res.status(200).json({
       message: `Request has been ${status}`,
       updatedRequest: request,
