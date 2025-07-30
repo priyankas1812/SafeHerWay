@@ -89,9 +89,9 @@ const AdminDashboard = () => {
 
       <div className="tabs">
         <button className="active">All Users</button>
-        <button>Pending Review</button>
+        {/* <button>Pending Review</button>
         <button>Approved</button>
-        <button>Rejected</button>
+        <button>Rejected</button> */}
       </div>
 
       <div className="user-list">

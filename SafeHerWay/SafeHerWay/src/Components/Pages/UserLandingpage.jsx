@@ -321,7 +321,9 @@ const UserLandingPage = () => {
                 >
                   💬 Chat
                 </button>
-                <button className="call-btn">📞 Call</button>
+                <button className="call-btn" href={`tel:${comp.phone}`}>
+                  📞 Call
+                </button>
               </div>
             ) : (
               <button

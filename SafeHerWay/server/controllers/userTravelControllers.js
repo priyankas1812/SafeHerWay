@@ -83,11 +83,16 @@ export const searchUserTravels = async (req, res) => {
     if (destination) query.destination = { $regex: destination, $options: "i" };
     if (date) query.date = new Date(date);
 
-    const results = await userTravel
-      .find(query)
-      .populate("user", "name userName email age");
+    const results = await userTravel.find(query).populate({
+      path: "user",
+      select: "name userName email age isVerified",
+      match: { isVerified: true },
+    });
 
-    res.status(200).json(results);
+    // Filter out entries where user is null (i.e., not verified)
+    const filteredResults = results.filter((travel) => travel.user !== null);
+
+    res.status(200).json(filteredResults);
   } catch (error) {
     res.status(500).json({ error: "Search failed", details: error.message });
   }
